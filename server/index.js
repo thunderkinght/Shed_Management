@@ -1,136 +1,68 @@
-// // const express = require("express");
-// // const app = express();
-// // const mysql = require('mysql2');
+const mysql=require('mysql2')
+const express=require('express')
+const cors=require('cors')
 
-// // const db = mysql.createPool({
-// //     host: 'localhost',
-// //     port: 3306,
-// //     user: 'root',
-// //     password: "Exam@123",
-// //     database: "alf",
-// // });
+const app=express()
 
+const db=mysql.createConnection({
+    host:'localhost',
+    user:"root",
+    password:"Ajinkya@2021",
+    database:"test"
+})
 
-
-
-// // app.get("/", (req, res) => {
-// //     const sqlInsert = "INSERT INTO alf.mov (`id`, `date`, `time`, `loco.no`, `self/dead`, `from`, `to`, `remark`, `work_done_time`) VALUES ('5', '2002-01-01', '16:00:00', '12345', 1, 'A', 'B', 'rem', '17:00');";
-// //     db.getConnection((err, connection) => {
-// //         if (err) {
-// //             console.error('Error connecting to the database:', err);
-// //             return;
-// //         }
-// //         else {
-// //             console.log('Connected to the database');
-// //             db.query("INSERT INTO alf.mov (`id`, `date`, `time`, `loco.no`, `self/dead`, `from`, `to`, `remark`, `work done time`) VALUES ('9', '2002-01-01', '16:00:00', '12345', 1, 'A', 'B', 'rem', '17:00');"
-// //                 , (err, result) => {
-// //                     if (err) {
-// //                         console.log(err);
-// //                         res.send("Error occurred.");
-// //                     } else {
-// //                         console.log("Connected");
-// //                         res.send("Hi, running on 3001");
-// //                     }
-// //                 });
-
-
-
-// //             connection.release();
-// //  } });
-
-     
-
-// //     });
-
-// // app.listen(3001, () => {
-// //     console.log("Running on 3001");
-// // });
-// const express = require("express");
-// const app = express();
-// const mysql = require('mysql2');
-
-// const db = mysql.createPool({
-//     host: 'localhost',
-//     port: 3306,
-//     user: 'root',
-//     password: "Exam@123",
-//     database: "alf",
-// });
-
-// app.use(express.json());
-
-// app.post("/submit", (req, res) => {
-//   const formData = req.body;
-
-//   const sqlInsert = "INSERT INTO alf.mov (`date`, `time`, `loco.no`, `self/dead`, `from`, `to`, `remark`, `work_done_time`) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
-//   const values = [
-//     formData["Date"],
-//     formData["Time"],
-//     formData["Loco. no"],
-//     formData["Self/Dead"],
-//     formData["From"],
-//     formData["To"],
-//     formData["Remark"],
-//     formData["Work Done Time"]
-//   ];
-
-//   db.query(sqlInsert, values, (err, result) => {
-//     if (err) {
-//       console.error(err);
-//       res.status(500).json({ error: "Error occurred." });
-//     } else {
-//       console.log("Data inserted into the database");
-//       res.status(200).json({ message: "Data inserted successfully." });
-//     }
-//   });
-// });
-
-// app.listen(3001, () => {
-//     console.log("Server is running on port 3001");
-// });
-const express = require("express");
-const app = express();
-const mysql = require('mysql2');
-const cors = require('cors'); // Import the cors package
-
-app.use(cors()); // Use cors middleware
 app.use(express.json());
+app.use(cors())
 
-const db = mysql.createPool({
-    host: 'localhost',
-    port: 3306,
-    user: 'root',
-    password: "Exam@123",
-    database: "alf",
-});
+app.get("/",(req,res)=>{
+    res.json("hello this is backend")
+})
 
-app.post("/submit", (req, res) => {
-  const formData = req.body;
+app.post("/registor",(req,res)=>{
+    const q="INSERT INTO users (firstname,lastname,username,email,password) Values (?)"
+    const values=[
+        req.body.firstname,
+        req.body.lastname,
+        req.body.username,
+        req.body.email,
+        req.body.password,
+        
+    ]
+    db.query(q,[values],(err,data)=>{
+        if (err) return res.json(err);
+        res.json(data);
+    })
+})
 
-  const sqlInsert = "INSERT INTO alf.mov (`id`, `date`, `time`, `loco.no`, `self/dead`, `from`, `to`, `remark`, `work done time`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
-  const values = [
-    formData["Sr.no"],
-    formData["Date"],
-    formData["Time"],
-    formData["Loco. no"],
-    formData["Self/Dead"],
-    formData["From"],
-    formData["To"],
-    formData["Remark"],
-    formData["Work Done Time"]
-  ];
+app.post("/login",(req,res)=>{
+    const q="Select * from users where email=?";
+    const email=req.body.email;
+    db.query(q,[email],(err,data)=>{
+        if(err) return res.json(err);
+        console.log(data)
+        res.json(data)
+    })
+})
 
-  db.query(sqlInsert, values, (err, result) => {
-    if (err) {
-      console.error(err);
-      res.status(500).json({ error: "Error occurred." });
-    } else {
-      console.log("Data inserted into the database");
-      res.status(200).json({ message: "Data inserted successfully." });
-    }
-  });
-});
+app.post("/login/:email",(req,res)=>{
+    const q="Select * from users where email=?";
+    const email=req.params.email;
+    //const password=req.params.password;
+    db.query(q,[email],(err,data)=>{
+        if(err) return res.json(err);
+        console.log(data)
+        res.json(data)
+    })
+})
 
-app.listen(3001, () => {
-    console.log("Server is running on port 3001");
-});
+app.get("/data",(req,res)=>{
+    const q="SELECT * from users"
+    db.query(q,(err,data)=>{
+        if (err) return res.json(err);
+        res.json(data);
+    })
+})
+
+app.listen(8800,()=>{
+    console.log("Connected to backend")
+})
