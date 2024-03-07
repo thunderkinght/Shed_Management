@@ -10,14 +10,19 @@ import { useLocation, useNavigate } from "react-router-dom";
 const Data = () => {
   const location=useLocation();
   const [users, setuser] = useState([]);
+  const [trains,settrain]=useState([]);
 
   const navigator=useNavigate();
 
   useEffect(() => {
     const fetchAllBooks = async () => {
       try {
-        const res = await axios.get("http://localhost:8800/data");
-        setuser(res.data);
+        if(location.state!=null && location.state.user.role==="admin"){
+          const res = await axios.get("http://localhost:8800/data");
+          setuser(res.data);
+        }
+        const res1=await axios.get("http://localhost:8800/train");
+        settrain(res1.data);
       } catch (err) {}
     };
     fetchAllBooks();
@@ -30,16 +35,23 @@ const Data = () => {
         <Navbar.Brand>Hello</Navbar.Brand>
         
         <Navbar.Collapse className="justify-content-end">
-          {location.state? <Navbar.Text>
+          {location.state? 
+          <Navbar.Text>
             Signed in as: <a href="#login">{location.state.user.firstname} {location.state.user.lastname}</a>
-          </Navbar.Text>: <div><Button onClick={()=>navigator("/login")} variant="primary">Login</Button><Button onClick={()=>navigator("/registor")} variant="primary">Registor</Button></div>}
+          </Navbar.Text>
+          : 
+          <div>
+            <Button onClick={()=>navigator("/login")} variant="primary">Login</Button>
+          </div>}
           
         </Navbar.Collapse>
 
       </Navbar>
       <Container>
-      <h1>Data</h1>
-      <div className="Datas">
+      {
+        location.state && location.state.user.role==='admin'?
+        <div className="Datas">
+          <h1>Username Data</h1>
         <Table striped bordered hover size="sm">
         <thead>
           <th>#</th>
@@ -48,21 +60,69 @@ const Data = () => {
           <th>Last Name</th>
           <th>Email</th>
           <th>Password</th>
+          <th>Role</th>
           </thead>
           <tbody>
           {users.map((user) => (
-            <tr key={user.ID} >
-              <td>{user.ID}</td>
+            <tr key={user.empID} >
+              <td>{user.empID}</td>
               <td>{user.username}</td>
               <td>{user.firstname}</td>
               <td>{user.lastname}</td>
               <td>{user.email}</td>
               <td>{user.password}</td>
+              <td>{user.role}</td>
             </tr>
           ))}
           </tbody>
         </Table>
       </div>
+      :
+      <div></div>
+      }
+      <h1>Train Data</h1>
+      <Table striped bordered hover size="sm">
+        <thead>
+          <th>#</th>
+          <th>Date</th>
+          <th>Time</th>
+          <th>Loco No</th>
+          <th>Self or Dead</th>
+          <th>Supervisor</th>
+          <th>From</th>
+          <th>To</th>
+          <th>Remark</th>
+          <th>Work Done</th>
+          </thead>
+          <tbody>
+          {trains.map((train) => (
+            <tr key={train.trainID} >
+              <td>{train.trainID}</td>
+              <td>{train.date}</td>
+              <td>{train.time}</td>
+              <td>{train.loco_no}</td>
+              <td>{train.self_dead}</td>
+              <td>{train.supervisor}</td>
+              <td>{train.froms}</td>
+              <td>{train.tos}</td>
+              <td>{train.remark}</td>
+              <td>{train.work_done? train.work_done: "Not Done"}</td>
+            </tr>
+          ))}
+          </tbody>
+        </Table>
+
+        {
+        location.state && location.state.user.role==='admin'?
+        <Button onClick={()=>navigator("/registor")} variant="primary">Add user</Button>:
+        <div></div>
+        }
+        {
+        location.state && (location.state.user.role==='admin' || location.state.user.role==='supervisior')?
+        <Button onClick={()=>navigator("/newtrain")} variant="primary">Add train</Button>:
+        <div></div>
+        }
+        
       </Container>
     </div>
   );

@@ -28,17 +28,7 @@ const Registor = () => {
     e.preventDefault();
     try {
       await axios.post("http://localhost:8800/registor", user);
-      
-      const res=await axios.post("http://localhost:8800/login/"+user.email);
-      console.log(res.data[0].password)
-
-      if(res.data[0].password===user.password){
-        console.log("Correct password")
-        navigator("/",{state:{user:res.data[0]}})
-      }
-      else{
-        console.log("Wrong password")
-      }
+      navigator("/")
     } catch (err) {}
   };
 

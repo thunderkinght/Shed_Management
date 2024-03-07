@@ -9,6 +9,7 @@ import {
 import Data from "./pages/data";
 import Login from './pages/login';
 import Registor from "./pages/registor";
+import Train from "./pages/train";
 
 const router = createBrowserRouter([
   {
@@ -22,6 +23,10 @@ const router = createBrowserRouter([
   {
     path: "/registor",
     element: <Registor/>
+  },
+  {
+    path:"/newtrain",
+    element: <Train/>
   }
 ]);
 
