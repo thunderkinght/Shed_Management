@@ -15,6 +15,8 @@ const Login = () => {
     password: "",
   });
 
+  
+
   //   const [getusers, getuser] = useState([]);
 
   const navigator = useNavigate();
@@ -31,6 +33,7 @@ const Login = () => {
 
       if (res.data[0].password === user.password) {
         console.log("Correct password");
+
         navigator("/", { state: { user: res.data[0] } });
       } else {
         console.log("Wrong password");

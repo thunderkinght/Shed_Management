@@ -1,6 +1,5 @@
 import axios from "axios";
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
@@ -8,14 +7,18 @@ import Row from "react-bootstrap/Row";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import Card from 'react-bootstrap/Card';
+import { useLocation, useNavigate } from "react-router-dom";
 
 const Registor = () => {
+
+  const location=useLocation();
   const [user, setuser] = useState({
     firstname: "",
     lastname: "",
     username: "",
     email: "",
     password: "",
+    role:""
   });
 
   const navigator = useNavigate();
@@ -28,7 +31,7 @@ const Registor = () => {
     e.preventDefault();
     try {
       await axios.post("http://localhost:8800/registor", user);
-      navigator("/")
+      navigator("/",{state:{user:location.state.user}})
     } catch (err) {}
   };
 
@@ -78,6 +81,20 @@ const Registor = () => {
               name="username"
               placeholder="Enter Username"
             />
+          </Col>
+        </Form.Group>
+
+        <Form.Group as={Row} className="mb-3" controlId="formPlaintextEmail">
+          <Form.Label column sm="2">
+            Self or Dead
+          </Form.Label>
+          <Col sm="10">
+          <Form.Select aria-label="Default select example" onChange={handleChange} name="role">
+            <option>Open this select menu</option>
+            <option value="admin">Admin</option>
+            <option value="supervisior">Supervisior</option>
+            <option value="worker">Worker</option>
+            </Form.Select>
           </Col>
         </Form.Group>
 

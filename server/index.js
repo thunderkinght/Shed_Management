@@ -26,10 +26,13 @@ app.post("/registor",(req,res)=>{
         req.body.username,
         req.body.email,
         req.body.password,
+        req.body.role
         
     ]
     db.query(q,[values],(err,data)=>{
-        if (err) return res.json(err);
+        if (err) {
+            console.log(err)
+            return res.json(err)};
         res.json(data);
     })
 })
@@ -39,7 +42,9 @@ app.post("/newtrain",(req,res)=>{
     const values=[
         req.body.trainID,
         req.body.date,
+        req.body.time,
         req.body.loco_no,
+        req.body.self_dead,
         req.body.froms,
         req.body.tos,
         req.body.remark,
@@ -48,7 +53,9 @@ app.post("/newtrain",(req,res)=>{
     ]
 
     db.query(q,[values],(err,data)=>{
-        if (err) return res.json(err);
+        if (err) {
+            console.log(err)
+            return res.json(err)};
         res.json(data);
     })
 })
@@ -70,6 +77,32 @@ app.post("/login/:email",(req,res)=>{
     db.query(q,[email],(err,data)=>{
         if(err) return res.json(err);
         console.log(data)
+        res.json(data)
+    })
+})
+
+app.delete("/user/:id",(req,res)=>{
+    const q="Delete from user where empID=?";
+    const id=req.params.id;
+
+    db.query(q,[id],(err,data)=>{
+        if(err){
+            console.log(err)
+            return res.json(err)
+        }
+        res.json(data)
+    })
+})
+
+app.delete("/train/:id",(req,res)=>{
+    const q="Delete from train where trainID=?";
+    const id=req.params.id;
+
+    db.query(q,[id],(err,data)=>{
+        if(err){
+            console.log(err)
+            return res.json(err)
+        }
         res.json(data)
     })
 })

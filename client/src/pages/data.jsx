@@ -6,12 +6,13 @@ import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useLocation, useNavigate } from "react-router-dom";
+// import { CookiesProvider, useCookies } from 'react-cookie'
 
 const Data = () => {
   const location=useLocation();
   const [users, setuser] = useState([]);
   const [trains,settrain]=useState([]);
-
+  // const [cookies, setCookie] = useCookies(['user'])
   const navigator=useNavigate();
 
   useEffect(() => {
@@ -27,6 +28,26 @@ const Data = () => {
     };
     fetchAllBooks();
   });
+
+  const handledeleteuser=async(id)=>{
+    try{
+      await axios.delete("http://localhost:8800/user/"+id)
+      window.location.reload();
+    }
+    catch(err){
+
+    }
+  };
+
+  const handledeletetrain=async(id)=>{
+    try{
+      await axios.delete("http://localhost:8800/train/"+id)
+      window.location.reload();
+    }
+    catch(err){
+
+    }
+  };
 
   return (
     <div>
@@ -72,6 +93,7 @@ const Data = () => {
               <td>{user.email}</td>
               <td>{user.password}</td>
               <td>{user.role}</td>
+              {location.state && location.state.user.role==='admin'? <td><Button onClick={()=>handledeleteuser(user.empID)}>Delete</Button></td>:<div></div>}
             </tr>
           ))}
           </tbody>
@@ -107,6 +129,7 @@ const Data = () => {
               <td>{train.tos}</td>
               <td>{train.remark}</td>
               <td>{train.work_done? train.work_done: "Not Done"}</td>
+              {location.state && (location.state.user.role==='admin' || location.state.user.role==='supervisior')? <td><Button onClick={()=>handledeletetrain(train.trainID)}>Delete</Button></td>:<div></div>}
             </tr>
           ))}
           </tbody>
@@ -114,12 +137,12 @@ const Data = () => {
 
         {
         location.state && location.state.user.role==='admin'?
-        <Button onClick={()=>navigator("/registor")} variant="primary">Add user</Button>:
+        <Button onClick={()=>navigator("/registor",{state:{user:location.state.user}})} variant="primary">Add user</Button>:
         <div></div>
         }
         {
         location.state && (location.state.user.role==='admin' || location.state.user.role==='supervisior')?
-        <Button onClick={()=>navigator("/newtrain")} variant="primary">Add train</Button>:
+        <Button onClick={()=>navigator("/newtrain",{state:{user:location.state.user}})} variant="primary">Add train</Button>:
         <div></div>
         }
         

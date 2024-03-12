@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
@@ -10,6 +10,7 @@ import Container from "react-bootstrap/Container";
 import Card from 'react-bootstrap/Card';
 
 const Train = () => {
+  const location=useLocation();
   const [train, settrain] = useState({
     trainID: "",
     date: "",
@@ -34,10 +35,11 @@ const Train = () => {
     try {
         
       await axios.post("http://localhost:8800/newtrain", train);
-      navigator("/")
+      navigator("/",{state:{user:location.state.user}})
     } catch (err) {}
   };
 
+  
   console.log(train);
 
   return (
@@ -163,6 +165,7 @@ const Train = () => {
               onChange={handleChange}
               name="work_done"
               placeholder="Enter the Work Time"
+              type="date"
             />
           </Col>
         </Form.Group>
