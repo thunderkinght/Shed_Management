@@ -86,7 +86,7 @@ const Registor = () => {
 
         <Form.Group as={Row} className="mb-3" controlId="formPlaintextEmail">
           <Form.Label column sm="2">
-            Self or Dead
+            Role
           </Form.Label>
           <Col sm="10">
           <Form.Select aria-label="Default select example" onChange={handleChange} name="role">

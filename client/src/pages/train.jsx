@@ -22,6 +22,7 @@ const Train = () => {
     remark: "",
     work_done: "",
     supervisor: "",
+    review_status:"",
   });
 
   const navigator = useNavigate();
@@ -179,6 +180,18 @@ const Train = () => {
               onChange={handleChange}
               name="supervisor"
               placeholder="Enter the Supervisor"
+            />
+          </Col>
+        </Form.Group>
+        <Form.Group as={Row} className="mb-3" controlId="formPlaintextPassword">
+          <Form.Label column sm="2">
+          Review Status
+          </Form.Label>
+          <Col sm="10">
+            <Form.Control
+              onChange={handleChange}
+              name="review_status"
+              placeholder="Enter the status"
             />
           </Col>
         </Form.Group>

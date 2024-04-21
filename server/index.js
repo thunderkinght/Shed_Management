@@ -7,8 +7,8 @@ const app=express()
 const db=mysql.createConnection({
     host:'localhost',
     user:"root",
-    password:"Ajinkya@2021",
-    database:"test"
+    password:"lihas",
+    database:"Shed"
 })
 
 app.use(express.json());
@@ -38,7 +38,7 @@ app.post("/registor",(req,res)=>{
 })
 
 app.post("/newtrain",(req,res)=>{
-    const q="INSERT INTO train (trainID,date,time,loco_no,self_dead,froms,tos,remark,work_done,supervisor) Values (?)"
+    const q="INSERT INTO train (trainID,date,time,loco_no,self_dead,froms,tos,remark,work_done,supervisor,review_status) Values (?)"
     const values=[
         req.body.trainID,
         req.body.date,
@@ -49,7 +49,8 @@ app.post("/newtrain",(req,res)=>{
         req.body.tos,
         req.body.remark,
         req.body.work_done,
-        req.body.supervisor
+        req.body.supervisor,
+        req.body.review_status
     ]
 
     db.query(q,[values],(err,data)=>{
@@ -81,8 +82,8 @@ app.post("/login/:email",(req,res)=>{
     })
 })
 
-app.delete("/user/:id",(req,res)=>{
-    const q="Delete from user where empID=?";
+app.post("/user/:id",(req,res)=>{
+    const q="Delete from user where id=?";
     const id=req.params.id;
 
     db.query(q,[id],(err,data)=>{
@@ -94,7 +95,52 @@ app.delete("/user/:id",(req,res)=>{
     })
 })
 
-app.delete("/train/:id",(req,res)=>{
+app.post("/updatestatusverify/:id",(req,res)=>{
+
+    const q="update train set review_status=2 where trainID=?";
+    const id=req.params.id;
+    
+
+    db.query(q,[id],(err,data)=>{
+        if (err) {
+            console.log(err)
+            return res.json(err)};
+        res.json(data);
+    })
+
+})
+
+app.post("/updatestatusincomplete/:id",(req,res)=>{
+
+    const q="update train set review_status=0 where trainID=?";
+    const id=req.params.id;
+    
+
+    db.query(q,[id],(err,data)=>{
+        if (err) {
+            console.log(err)
+            return res.json(err)};
+        res.json(data);
+    })
+
+})
+
+
+app.post("/updatestatustrain/:id",(req,res)=>{
+
+    const q="update train set review_status=1 where trainID=?";
+    const id=req.params.id;
+    
+
+    db.query(q,[id],(err,data)=>{
+        if (err) {
+            console.log(err)
+            return res.json(err)};
+        res.json(data);
+    })
+
+})
+app.post("/train/:id",(req,res)=>{
     const q="Delete from train where trainID=?";
     const id=req.params.id;
 
